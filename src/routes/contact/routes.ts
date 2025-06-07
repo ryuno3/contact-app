@@ -1,12 +1,13 @@
 import express, { Request, Response, Router } from "express";
 import nodemailer from "nodemailer";
+import { ContactRequestBody } from "../../types/contact/type";
 const router: Router = express.Router();
 
 router.get("/", (req: Request, res: Response) => {
   res.send("this is my contact application");
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req: Request<{}, {}, ContactRequestBody>, res: Response) => {
   // お問い合わせ内容のjson
   // {
   //     "type":"contact",
@@ -22,8 +23,9 @@ router.post("/", async (req, res) => {
 
   try {
     const body = req.body;
-    if (!body) {
-      res.status(400).send({ error: "Cannnot Find Request Body" });
+    if (!body?.params || !body.params.name || !body.params.email || !body.params.content) {
+      res.status(400).json({ error: "Invalid request parameters" });
+      return;
     }
     const { name, email, content } = body?.params;
 
