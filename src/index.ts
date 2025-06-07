@@ -1,11 +1,17 @@
 import express from "express";
+import contactRouter from "./routes/contact/routes";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get("/contact", (req, res) => {
-  res.send("this is a my contact application");
-});
+// ミドルウェア
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// ルーティング
+app.use("/contact", contactRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
