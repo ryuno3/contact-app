@@ -1,6 +1,7 @@
 import express, { Request, Response, Router } from "express";
 import nodemailer from "nodemailer";
 import { ContactRequestBody } from "../../types/contact/type";
+import { ContactResponseDto } from "../../dto/contact/contactResponseDto";
 const router: Router = express.Router();
 
 router.get("/", (req: Request, res: Response) => {
@@ -49,10 +50,21 @@ router.post("/", async (req: Request<{}, {}, ContactRequestBody>, res: Response)
     };
 
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ success: true, message: "メール送信が完了しました" });
+    const response = new ContactResponseDto({
+      name,
+      email,
+      content,
+      success: true,
+      message: "メールが正常に送信されました。",
+    });
+    res.status(200).json(response) as Response;
   } catch (e) {
     console.error("メール送信エラー:", e);
-    res.status(500).json({ success: false, message: "メール送信に失敗しました。" });
+    const response = new ContactResponseDto({
+      success: false,
+      message: "メール送信に失敗しました。",
+    });
+    res.status(500).json(response) as Response;
   }
 });
 
