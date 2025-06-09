@@ -51,6 +51,7 @@ router.post("/", async (req: Request<{}, {}, ContactRequestBody>, res: Response)
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: "メール送信が完了しました" });
   } catch (e) {
+    console.error("メール送信エラー:", e);
     res.status(500).json({ success: false, message: "メール送信に失敗しました。" });
   }
 });
